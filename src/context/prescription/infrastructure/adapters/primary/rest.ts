@@ -1,11 +1,9 @@
 import { Err, Ok, Result } from "@sniptt/monads/build";
 import fastify from "fastify";
-import { PrescriptionAggregate } from "../../../domain/entity/aggregate";
 import { CreatePrescriptionCommand } from "../../../domain/entity/command";
-import { createPrescriptionMachine } from "../../../domain/machine";
 import { CreatePrescriptionUseCase } from "../../../application/inbound/createPrescription";
-import { PrescriptionService } from "../../../application/service/prescription";
 import { RESTPrescription } from "../../dtos/rest/prescription";
+import { requireParams } from "../../../../common/utils/rest";
 
 interface PrescriptionMutation {
   medication_id?: string;
@@ -19,38 +17,28 @@ export class RESTPrescriptionAdapter {
 
   public constructor(service: CreatePrescriptionUseCase<RESTPrescription>) {
     this.service = service;
-    this.app = fastify({ logger: true });
+    this.app = fastify({ logger: false });
+    this.app.addContentTypeParser(
+      "application/json",
+      { parseAs: "string" },
+      function (req, body: string, done) {
+        try {
+          var json = JSON.parse(body);
+          done(null, json);
+        } catch (err) {
+          done(null, {});
+        }
+      }
+    );
     this.app.post<{ Body: PrescriptionMutation }>(
       "/prescription",
       async (req, res) => {
-        let errors = [];
         let { medication_id, patient_id, address } = req.body;
-        if (!medication_id) {
-          errors.push({
-            type: "invalid_request_error",
-            code: "parameter_missing",
-            message:
-              "We expected a value for medication_id, but none was provided",
-            param: "medication_id",
-          });
-        }
-        if (!patient_id) {
-          errors.push({
-            type: "invalid_request_error",
-            code: "parameter_missing",
-            message:
-              "We expected a value for patient_id, but none was provided",
-            param: "patient_id",
-          });
-        }
-        if (!address) {
-          errors.push({
-            type: "invalid_request_error",
-            code: "parameter_missing",
-            message: "We expected a value for address, but none was provided",
-            param: "address",
-          });
-        }
+        const errors = requireParams({
+          medication_id,
+          patient_id,
+          address,
+        });
         if (errors.length > 0) {
           res.send({
             errors,
