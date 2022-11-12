@@ -1,7 +1,8 @@
 import { Err, Ok, Option, Result } from "@sniptt/monads/build";
 import { Knex, knex } from "knex";
+import KnexBetterSqlite3 = require("knex/lib/dialects/better-sqlite3");
 import { EventRepository } from "@common/application/ports/outbound/eventRepository";
-import { AggregateSnapshot, From } from "@common/domain/entity";
+import { AggregateSnapshot } from "@common/domain/entity";
 import {
   PrescriptionAggregate,
   PrescriptionAggregateEventEnvlope,
@@ -39,7 +40,7 @@ export class SqliteConnector
     this.instanceId = instanceId;
     try {
       this.connection = knex({
-        client: "better-sqlite3",
+        client: KnexBetterSqlite3,
         connection: {
           filename: filename,
         },
@@ -114,7 +115,7 @@ export class SqliteConnector
     });
     try {
       const result = await query;
-      const events = [];
+      const events: PrescriptionAggregateEventEnvlopeType[] = [];
       for (const event of result) {
         const raw_payload = JSON.parse(event["payload"]);
         switch (event["event_type"]) {
@@ -167,7 +168,7 @@ export class SqliteConnector
     }
     try {
       const result = await query;
-      const events = [];
+      const events: PrescriptionAggregateEventEnvlopeType[] = [];
       for (const event of result) {
         const raw_payload = JSON.parse(event["payload"]);
         switch (event["event_type"]) {
@@ -205,6 +206,7 @@ export class SqliteConnector
       PrescriptionAggregateEventEnvlopeType,
       PrescriptionAggregateEventEnvlopeType
     >,
+    topicMapper: (event: PrescriptionAggregateEventEnvlope) => string,
     transformer: (event: PrescriptionAggregateEventEnvlope) => Option<O>
   ): Promise<Result<undefined, Error>> {
     const deleteQuery = (tx: Knex.Transaction<any, any[]>) =>
@@ -213,7 +215,7 @@ export class SqliteConnector
       });
     let tx = await this.connection.transaction();
     try {
-      await bus.sendEvent<O>("prescriptions", event, transformer);
+      await bus.sendEvent<O>(event, topicMapper, transformer);
       await deleteQuery(tx);
       await tx.commit();
     } catch (e) {

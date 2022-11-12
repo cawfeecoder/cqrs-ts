@@ -1,6 +1,5 @@
 TODO:
 
-- [] Add DTO for CloudEvents to serialize/deserialize out in specific JSON format
 - [] Add configuration
 - [] Add tests
 - [] Add query side

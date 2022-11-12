@@ -1,10 +1,10 @@
-import { From } from "@common/domain/entity";
+import { DomainEvent, EventEnvelope, From } from "@common/domain/entity";
 import { Option, Result } from "@sniptt/monads";
 import { EventBus } from "./eventBus";
 
 export interface EventRepository<
-  InboundEvent,
-  OutboundEvent,
+  InboundEvent extends EventEnvelope<DomainEvent>,
+  OutboundEvent extends EventEnvelope<DomainEvent>,
   InboundSnapshot,
   OutboundSnapshot
 > {
@@ -23,6 +23,7 @@ export interface EventRepository<
   sendAndDeleteOutboxEvent<O>(
     event: InboundEvent,
     bus: EventBus<InboundEvent, OutboundEvent>,
+    topicMapper: (event: InboundEvent) => string,
     transformer: (event: InboundEvent) => Option<O>
   ): Promise<Result<undefined, Error>>;
 }

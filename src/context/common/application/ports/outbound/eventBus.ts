@@ -1,11 +1,14 @@
-import { From } from "@common/domain/entity";
+import { DomainEvent, EventEnvelope } from "@common/domain/entity";
 import { Option, Result } from "@sniptt/monads";
 import { Observable } from "observable-fns";
 
-export interface EventBus<InboundEvent, OutboundEvent> {
+export interface EventBus<
+  InboundEvent extends EventEnvelope<DomainEvent>,
+  OutboundEvent extends EventEnvelope<DomainEvent>
+> {
   sendEvent<O>(
-    topic: string,
     event: InboundEvent,
+    topicMapper: (event: InboundEvent) => string,
     transformer: (event: InboundEvent) => Option<O>
   ): Promise<Result<boolean, Error>>;
   receiveEvents<Inbound, Parsed>(
