@@ -2,11 +2,11 @@ import { Err, Ok, Result } from "@sniptt/monads/build";
 import {
   PrescriptionAggregate,
   PrescriptionAggregateEventEnvlope,
-} from "../../domain/entity/aggregate";
-import { CreatePrescriptionCommand } from "../../domain/entity/command";
-import { AggregateSnapshot } from "../../../common/domain/entity";
-import { CreatePrescriptionUseCase } from "../inbound/createPrescription";
-import { EventRepository } from "../../../common/application/ports/outbound/eventRepository";
+} from "@prescription/domain/entity/aggregate";
+import { CreatePrescriptionCommand } from "@prescription/domain/entity/command";
+import { AggregateSnapshot } from "@common/domain/entity";
+import { CreatePrescriptionUseCase } from "@prescription/application/ports/inbound/createPrescription";
+import { EventRepository } from "@common/application/ports/outbound/eventRepository";
 
 export class PrescriptionService<Output>
   implements CreatePrescriptionUseCase<Output>
@@ -48,7 +48,7 @@ export class PrescriptionService<Output>
           new PrescriptionAggregateEventEnvlope({
             aggregateId: aggregate.id.unwrap(),
             aggregateType: aggregate.aggregateType(),
-            sequence: evt.eventId(),
+            sequence: evt.eventId,
             payload: evt,
             metadata: {},
             timestamp: new Date(),

@@ -1,7 +1,6 @@
 import { Result } from "@sniptt/monads/build";
-import { PrescriptionAggregate } from "../../domain/entity/aggregate";
-import { CreatePrescriptionCommand } from "../../domain/entity/command";
-import { From } from "../../../common/domain/entity/traits";
+import { PrescriptionAggregate } from "@prescription/domain/entity/aggregate";
+import { CreatePrescriptionCommand } from "@prescription/domain/entity/command";
 
 export interface CreatePrescriptionUseCase<Output> {
   createPrescription: (

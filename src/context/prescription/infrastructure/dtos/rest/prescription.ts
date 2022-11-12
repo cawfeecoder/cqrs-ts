@@ -1,8 +1,5 @@
-import { PrescriptionAggregate } from "../../../domain/entity/aggregate";
-import {
-  From,
-  staticImplements,
-} from "../../../../common/domain/entity/traits";
+import { PrescriptionAggregate } from "@prescription/domain/entity/aggregate";
+import { From, staticImplements } from "@common/domain/entity/traits";
 
 @staticImplements<From<PrescriptionAggregate, RESTPrescription>>()
 export class RESTPrescription {

@@ -1,3 +1,4 @@
+import { From } from "@common/domain/entity";
 import { Option, Result } from "@sniptt/monads";
 import { EventBus } from "./eventBus";
 
@@ -18,9 +19,10 @@ export interface EventRepository<
   //   retrieveLatestSnapshot: (
   //     aggregateId: string
   //   ) => Promise<Result<Option<OutboundSnapshot>, Error>>;
-  //   retrieveOutboxEvents: () => Promise<Result<Array<OutboundEvent>, Error>>;
-  //   sendAndDeleteOutboxEvent: (
-  //     event: InboundEvent,
-  //     bus: EventBus<InboundEvent, OutboundEvent>
-  //   ) => Promise<Result<undefined, Error>>;
+  retrieveOutboxEvents: () => Promise<Result<Array<OutboundEvent>, Error>>;
+  sendAndDeleteOutboxEvent<O>(
+    event: InboundEvent,
+    bus: EventBus<InboundEvent, OutboundEvent>,
+    transformer: (event: InboundEvent) => Option<O>
+  ): Promise<Result<undefined, Error>>;
 }

@@ -1,9 +1,9 @@
 import { None } from "@sniptt/monads";
 import { createMachine } from "xstate";
-import { PrescriptionCommand } from "../entity/command";
-import { PrescriptionContext } from "./context";
-import Created from "./states/created";
-import New from "./states/new";
+import { PrescriptionCommand } from "@prescription/domain/entity/command";
+import { PrescriptionContext } from "@prescription/domain/machine/context";
+import Created from "@prescription/domain/machine/states/created";
+import New from "@prescription/domain/machine/states/new";
 
 export function createPrescriptionMachine(initialState: string) {
   return createMachine<

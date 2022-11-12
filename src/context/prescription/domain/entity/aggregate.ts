@@ -1,15 +1,23 @@
 import { Err, None, Ok, Option, Result, Some } from "@sniptt/monads";
 import { ulid } from "ulid";
-import { initEvent } from "xstate/lib/actions";
 import {
   Aggregate,
   AggregateSnapshot,
   EventEnvelope,
-} from "../../../common/domain/entity";
-import { createPrescriptionMachine } from "../machine";
-import { CreatePrescriptionCommand, PrescriptionCommand } from "./command";
-import { PrescriptionError, PrescripionErrorTypes } from "./error";
-import { PrescriptionCreatedEvent, PrescriptionEvent } from "./event";
+} from "@common/domain/entity";
+import { createPrescriptionMachine } from "@prescription/domain/machine";
+import {
+  CreatePrescriptionCommand,
+  PrescriptionCommand,
+} from "@prescription/domain/entity/command";
+import {
+  PrescriptionError,
+  PrescripionErrorTypes,
+} from "@prescription/domain/entity/error";
+import {
+  PrescriptionCreatedEvent,
+  PrescriptionEvent,
+} from "@prescription/domain/entity/event";
 
 export type PrescriptionAggregateType = Aggregate<
   PrescriptionCommand,
@@ -18,21 +26,10 @@ export type PrescriptionAggregateType = Aggregate<
   {}
 >;
 
-export type PrescriptionAggregateEventEnvlopeType = EventEnvelope<
-  PrescriptionCommand,
-  PrescriptionEvent,
-  PrescriptionError,
-  {},
-  PrescriptionAggregate
->;
+export type PrescriptionAggregateEventEnvlopeType =
+  EventEnvelope<PrescriptionEvent>;
 
-export class PrescriptionAggregateEventEnvlope extends EventEnvelope<
-  PrescriptionCommand,
-  PrescriptionEvent,
-  PrescriptionError,
-  {},
-  PrescriptionAggregate
-> {}
+export class PrescriptionAggregateEventEnvlope extends EventEnvelope<PrescriptionEvent> {}
 
 export class PrescriptionAggregate
   implements
@@ -108,7 +105,7 @@ export class PrescriptionAggregate
           aggregateId: this.aggregateId().unwrap(),
           aggregateType: this.aggregateType(),
           payload: this,
-          lastSequence: this.lastEvent.unwrap().eventId(),
+          lastSequence: this.lastEvent.unwrap().eventId,
           snapshotId: ulid(),
           timestamp: new Date(),
         })

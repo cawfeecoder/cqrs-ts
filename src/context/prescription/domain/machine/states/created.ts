@@ -1,13 +1,12 @@
 import { Some } from "@sniptt/monads";
 import { ulid } from "ulid";
-import { assign, State, StateNode } from "xstate";
+import { assign } from "xstate";
 import {
-  CreatePrescriptionCommand,
   PrescriptionCommand,
   UpdatePrescriptionCommand,
-} from "../../entity/command";
-import { PrescriptionUpdatedEvent } from "../../entity/event";
-import { PrescriptionContext } from "../context";
+} from "@prescription/domain/entity/command";
+import { PrescriptionUpdatedEvent } from "@prescription/domain/entity/event";
+import { PrescriptionContext } from "@prescription/domain/machine/context";
 
 export const CreatedState = "Created";
 

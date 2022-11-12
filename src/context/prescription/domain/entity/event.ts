@@ -1,4 +1,4 @@
-import { DomainEvent } from "../../../common/domain/entity";
+import { DomainEvent } from "@common/domain/entity";
 
 export interface PrescriptionEvent extends DomainEvent {}
 
@@ -7,7 +7,7 @@ export class PrescriptionCreatedEvent implements PrescriptionEvent {
   public medicationId: string;
   public patientId: string;
   public address: string;
-  private _eventId: string;
+  public eventId: string;
 
   public constructor({
     id,
@@ -26,7 +26,7 @@ export class PrescriptionCreatedEvent implements PrescriptionEvent {
     this.medicationId = medicationId;
     this.patientId = patientId;
     this.address = address;
-    this._eventId = eventId;
+    this.eventId = eventId;
   }
 
   eventType(): string {
@@ -36,15 +36,11 @@ export class PrescriptionCreatedEvent implements PrescriptionEvent {
   eventVersion(): string {
     return "0.0.1";
   }
-
-  eventId(): string {
-    return this._eventId;
-  }
 }
 
 export class PrescriptionUpdatedEvent implements PrescriptionEvent {
   public address: string;
-  private _eventId: string;
+  public eventId: string;
 
   public constructor({
     address,
@@ -54,7 +50,7 @@ export class PrescriptionUpdatedEvent implements PrescriptionEvent {
     eventId: string;
   }) {
     this.address = address;
-    this._eventId = eventId;
+    this.eventId = eventId;
   }
 
   eventType(): string {
@@ -63,9 +59,5 @@ export class PrescriptionUpdatedEvent implements PrescriptionEvent {
 
   eventVersion(): string {
     return "0.0.1";
-  }
-
-  eventId(): string {
-    return this._eventId;
   }
 }

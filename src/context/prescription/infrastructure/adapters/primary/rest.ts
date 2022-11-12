@@ -1,9 +1,10 @@
 import { Err, Ok, Result } from "@sniptt/monads/build";
 import fastify from "fastify";
-import { CreatePrescriptionCommand } from "../../../domain/entity/command";
-import { CreatePrescriptionUseCase } from "../../../application/inbound/createPrescription";
-import { RESTPrescription } from "../../dtos/rest/prescription";
-import { requireParams } from "../../../../common/utils/rest";
+import { CreatePrescriptionCommand } from "@prescription/domain/entity/command";
+import { CreatePrescriptionUseCase } from "@prescription/application/ports/inbound/createPrescription";
+import { RESTPrescription } from "@prescription/infrastructure/dtos/rest/prescription";
+import { requireParams } from "@common/utils/rest";
+import { ApplicationLogger } from "@common/utils/logger";
 
 interface PrescriptionMutation {
   medication_id?: string;
@@ -14,9 +15,11 @@ interface PrescriptionMutation {
 export class RESTPrescriptionAdapter {
   private service: CreatePrescriptionUseCase<RESTPrescription>;
   private app;
+  private logger;
 
   public constructor(service: CreatePrescriptionUseCase<RESTPrescription>) {
     this.service = service;
+    this.logger = ApplicationLogger.getInstance().getLogger();
     this.app = fastify({ logger: false });
     this.app.addContentTypeParser(
       "application/json",
@@ -55,7 +58,10 @@ export class RESTPrescriptionAdapter {
         );
         result.match({
           ok: (val) => res.send(val),
-          err: () => res.status(500),
+          err: (err) => {
+            this.logger.error(err);
+            return res.status(500);
+          },
         });
       }
     );
@@ -63,7 +69,14 @@ export class RESTPrescriptionAdapter {
 
   public async run(): Promise<Result<undefined, Error>> {
     try {
-      await this.app.listen({ port: 3000 });
+      await this.app.listen({ port: 3000 }, (err, address) => {
+        if (err) {
+          this.logger.error(err.message);
+        }
+        this.logger.info("Prescription REST service started", {
+          address: address,
+        });
+      });
       return Ok(undefined);
     } catch (e) {
       return Err(e as Error);

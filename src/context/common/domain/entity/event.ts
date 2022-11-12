@@ -1,9 +1,8 @@
-import { Aggregate } from "./aggregate";
-
 export interface DomainEvent {
   eventType: () => string;
   eventVersion: () => string;
-  eventId: () => string;
+  eventId: string;
+  toString: () => string;
 }
 
 export class AggregateSnapshot<S> {
@@ -38,13 +37,7 @@ export class AggregateSnapshot<S> {
   }
 }
 
-export class EventEnvelope<
-  Command,
-  Event extends DomainEvent,
-  Error,
-  Services,
-  A extends Aggregate<Command, Event, Error, Services>
-> {
+export class EventEnvelope<Event extends DomainEvent> {
   public aggregateId: string;
   public aggregateType: string;
   public sequence: string;

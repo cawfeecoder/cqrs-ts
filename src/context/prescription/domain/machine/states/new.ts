@@ -3,10 +3,10 @@ import { assign, State, StateNodeConfig } from "xstate";
 import {
   CreatePrescriptionCommand,
   PrescriptionCommand,
-} from "../../entity/command";
-import { PrescriptionCreatedEvent } from "../../entity/event";
-import { PrescriptionContext } from "../context";
-import { CreatedState } from "./created";
+} from "@prescription/domain/entity/command";
+import { PrescriptionCreatedEvent } from "@prescription/domain/entity/event";
+import { PrescriptionContext } from "@prescription/domain/machine/context";
+import { CreatedState } from "@prescription/domain/machine/states/created";
 import { ulid } from "ulid";
 
 export const NewState = "New";
