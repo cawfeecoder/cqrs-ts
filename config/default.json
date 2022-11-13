@@ -1,0 +1,16 @@
+{
+  "prescription": {
+    "repository": {},
+    "inboundAdapters": ["rest", "graphql"],
+    "outbox": {
+      "enabled": true,
+      "transportType": "cloudevent",
+      "configuration": {
+        "type": "nats",
+        "configuration": {
+          "address": "localhost:4222"
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "prescription": {
+    "repository": {
+      "type": "REPOSITORY_TYPE",
+      "connectionString": "REPOSITORY_CONNECTION_STRING"
+    }
+  }
+}

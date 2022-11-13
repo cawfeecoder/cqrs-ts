@@ -4,7 +4,7 @@ import { connect, Events, JSONCodec, NatsConnection } from "nats";
 import { Observable, SubscriptionObserver } from "observable-fns";
 import { EventBus } from "../../../../application/ports/outbound/eventBus";
 
-export class NATSBus<T extends EventEnvelope<DomainEvent>, O>
+export class NATSBus<T extends EventEnvelope<DomainEvent>>
   implements EventBus<T, T>
 {
   private bus?: NatsConnection;

@@ -1,6 +1,5 @@
 TODO:
 
-- [] Add configuration
 - [] Add tests
 - [] Add query side
 - [] Cleanup
