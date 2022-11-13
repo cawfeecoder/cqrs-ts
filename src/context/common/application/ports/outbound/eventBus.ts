@@ -10,7 +10,7 @@ export interface EventBus<
 		event: InboundEvent,
 		topicMapper: (event: InboundEvent) => string,
 		transformer: (event: InboundEvent) => Option<O>,
-	): Promise<Result<boolean, Error>>;
+	): Promise<Result<undefined, Error>>;
 	receiveEvents<Inbound, Parsed>(
 		topic: string,
 		mapper: (event: Inbound) => Parsed,

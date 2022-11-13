@@ -8,7 +8,7 @@
     "package:lambda": "cd dist && zip -r cqrs-ts.zip index.js*",
     "build": "rimraf ./dist && tsc --project './tsconfig.json' && tsconfig-replace-paths -p ./tsconfig.json -s ./src/index.ts -o ./dist",
     "dev": "ts-node-dev --project './tsconfig.json' --watch -r tsconfig-paths/register ./src/index.ts",
-    "test": "jest"
+    "test": "jest --runInBand"
   },
   "keywords": [],
   "author": "",
@@ -16,11 +16,14 @@
   "devDependencies": {
     "@apollo/server": "^4.1.1",
     "@types/config": "^3.3.0",
+    "@types/dockerode": "^3.3.12",
     "@types/jest": "^29.2.2",
     "@types/node": "^18.11.9",
+    "dockerode": "^3.3.4",
     "esbuild": "^0.15.13",
     "graphql-tag": "^2.12.6",
     "jest": "^29.3.1",
+    "jest-mock-extended": "^3.0.1",
     "rimraf": "^3.0.2",
     "rome": "^10.0.1",
     "ts-jest": "^29.0.3",
@@ -40,6 +43,8 @@
     "logform": "^2.4.2",
     "nats": "^2.9.0",
     "observable-fns": "^0.6.1",
+    "pg": "^8.8.0",
+    "pg-native": "^3.0.1",
     "sqlite3": "^5.1.2",
     "ulid": "^2.3.0",
     "winston": "^3.8.2",

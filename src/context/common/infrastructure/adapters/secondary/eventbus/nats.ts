@@ -41,7 +41,7 @@ export class NATSBus<T extends EventEnvelope<DomainEvent>>
 		event: T,
 		topicMapper: (event: T) => string,
 		transformer: (event: T) => Option<O>,
-	): Promise<Result<boolean, Error>> {
+	): Promise<Result<undefined, Error>> {
 		if (!this.connected) {
 			throw new Error("Connection to bus closed. Attempting to reconnect");
 		}
@@ -49,7 +49,7 @@ export class NATSBus<T extends EventEnvelope<DomainEvent>>
 		const transformed = transformer(event);
 		const encoded = sc.encode(transformed.unwrap());
 		this.bus!.publish(topicMapper(event), encoded);
-		return Ok(true);
+		return Ok(undefined);
 	}
 
 	async receiveEvents<I, P>(
