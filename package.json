@@ -7,7 +7,8 @@
     "build:lambda": "rimraf ./dist && npx esbuild src/index.ts --bundle --minify --sourcemap --target=es2020 --outfile=./dist/index.js --platform=node --external:knex",
     "package:lambda": "cd dist && zip -r cqrs-ts.zip index.js*",
     "build": "rimraf ./dist && tsc --project './tsconfig.json' && tsconfig-replace-paths -p ./tsconfig.json -s ./src/index.ts -o ./dist",
-    "dev": "ts-node-dev --project './tsconfig.json' --watch -r tsconfig-paths/register ./src/index.ts"
+    "dev": "ts-node-dev --project './tsconfig.json' --watch -r tsconfig-paths/register ./src/index.ts",
+    "test": "jest"
   },
   "keywords": [],
   "author": "",
@@ -15,10 +16,13 @@
   "devDependencies": {
     "@apollo/server": "^4.1.1",
     "@types/config": "^3.3.0",
+    "@types/jest": "^29.2.2",
     "@types/node": "^18.11.9",
     "esbuild": "^0.15.13",
     "graphql-tag": "^2.12.6",
+    "jest": "^29.3.1",
     "rimraf": "^3.0.2",
+    "ts-jest": "^29.0.3",
     "ts-node-dev": "^2.0.0",
     "tsconfig-paths": "^4.1.0",
     "tsconfig-replace-paths": "^0.0.11",
