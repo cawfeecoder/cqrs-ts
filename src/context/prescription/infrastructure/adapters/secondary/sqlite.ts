@@ -13,6 +13,7 @@ import {
 	PrescriptionEvent,
 } from "@prescription/domain/entity/event";
 import { EventBus } from "@common/application/ports/outbound/eventBus";
+import { ApplicationLogger } from "@common/utils/logger";
 
 const EVENT_TABLE_NAME = "events";
 const SNAPSHOT_TABLE_NAME = "snapshots";
@@ -29,15 +30,19 @@ export class SqliteConnector
 {
 	private connection;
 	private instanceId;
+	private logger;
 
 	public constructor({
 		filename,
 		instanceId,
+		migrationPath,
 	}: {
 		filename: string;
 		instanceId?: string;
+		migrationPath?: string;
 	}) {
 		this.instanceId = instanceId;
+		this.logger = ApplicationLogger.getInstance().getLogger();
 		try {
 			this.connection = knex({
 				client: KnexBetterSqlite3,
@@ -46,6 +51,25 @@ export class SqliteConnector
 				},
 				useNullAsDefault: true,
 			});
+			if (migrationPath) {
+				this.logger.info("Running migrations");
+				this.connection.migrate
+					.up({
+						directory: migrationPath,
+					})
+					.then((m) => {
+						if (m["1"].length > 0) {
+							this.logger.info("Migrations ran", {
+								migrations: m["1"],
+							});
+						}
+					})
+					.catch((err) => {
+						this.logger.error("Migration failed to run", {
+							error: err,
+						});
+					});
+			}
 		} catch (e) {
 			throw new Error(
 				`Failed to constructor SQLite connector: ${(e as Error).message}`,

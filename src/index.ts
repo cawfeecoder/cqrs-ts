@@ -48,6 +48,7 @@ import { PrescriptionOutboxAdapter } from "@prescription/infrastructure/adapters
 			case "sqlite": {
 				repository = new SqliteConnector({
 					filename: prescriptionConfig.repository.connectionString,
+					migrationPath: "./migrations/sqlite",
 				});
 				break;
 			}
