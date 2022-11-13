@@ -178,6 +178,7 @@ describe("Prescription SQLiteConnector", () => {
 		expect(eventsAfterSend.length).toEqual(0);
 	});
 	it("errors when sending an outbox event when it can't successfully talk to the event bus", async () => {
+		jest.setTimeout(7500);
 		//Arange
 		await repository.migrate();
 
@@ -201,8 +202,8 @@ describe("Prescription SQLiteConnector", () => {
 		const events = await (await repository.retrieveOutboxEvents()).unwrap();
 
 		mockEventBus.sendEvent.mockReturnValue(
-			new Promise((_, reject) => {
-				reject(Err(new Error("Failed to talk to event bus")));
+			new Promise((resolve) => {
+				resolve(Err(new Error("Failed to talk to event bus")));
 			}),
 		);
 

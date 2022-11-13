@@ -238,7 +238,10 @@ export class SqliteConnector
 			});
 		let tx = await this.connection.transaction();
 		try {
-			await bus.sendEvent<O>(event, topicMapper, transformer);
+			let sent = await bus.sendEvent<O>(event, topicMapper, transformer);
+			if (sent.isErr()) {
+				throw sent.unwrapErr();
+			}
 			await deleteQuery(tx);
 			await tx.commit();
 		} catch (e) {
