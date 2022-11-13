@@ -16,8 +16,12 @@ export class ApplicationLogger {
 		return this;
 	}
 
-	public enableConsoleOutput(): ApplicationLogger {
-		this.logger.add(new transports.Console());
+	public enableConsoleOutput(level?: string): ApplicationLogger {
+		this.logger.add(
+			new transports.Console({
+				level: level,
+			}),
+		);
 		return this;
 	}
 

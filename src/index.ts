@@ -50,6 +50,7 @@ import { PrescriptionOutboxAdapter } from "@prescription/infrastructure/adapters
 					filename: prescriptionConfig.repository.connectionString,
 					migrationPath: "./migrations/sqlite",
 				});
+				await repository.migrate();
 				break;
 			}
 		}
@@ -100,8 +101,9 @@ import { PrescriptionOutboxAdapter } from "@prescription/infrastructure/adapters
 			}
 		}
 	} catch (err) {
-		console.log(err);
-		logger.error(err);
+		logger.error((err as Error).message, {
+			stack: (err as Error).stack,
+		});
 		return process.exit(1);
 	}
 })();

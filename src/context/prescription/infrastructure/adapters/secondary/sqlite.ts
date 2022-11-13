@@ -31,6 +31,7 @@ export class SqliteConnector
 	private connection;
 	private instanceId;
 	private logger;
+	private migrationPath;
 
 	public constructor({
 		filename,
@@ -51,29 +52,25 @@ export class SqliteConnector
 				},
 				useNullAsDefault: true,
 			});
-			if (migrationPath) {
-				this.logger.info("Running migrations");
-				this.connection.migrate
-					.up({
-						directory: migrationPath,
-					})
-					.then((m) => {
-						if (m["1"].length > 0) {
-							this.logger.info("Migrations ran", {
-								migrations: m["1"],
-							});
-						}
-					})
-					.catch((err) => {
-						this.logger.error("Migration failed to run", {
-							error: err,
-						});
-					});
-			}
+			this.migrationPath = migrationPath;
 		} catch (e) {
 			throw new Error(
 				`Failed to constructor SQLite connector: ${(e as Error).message}`,
 			);
+		}
+	}
+
+	public async migrate(): Promise<void> {
+		if (this.migrationPath) {
+			this.logger.info("Running migrations");
+			let migrationInfo = await this.connection.migrate.up({
+				directory: this.migrationPath,
+			});
+			if (migrationInfo["1"].length > 0) {
+				this.logger.info("Migrations ran", {
+					migrations: migrationInfo["1"],
+				});
+			}
 		}
 	}
 

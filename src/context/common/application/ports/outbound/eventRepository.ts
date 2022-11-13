@@ -20,6 +20,7 @@ export interface EventRepository<
 	//     aggregateId: string
 	//   ) => Promise<Result<Option<OutboundSnapshot>, Error>>;
 	retrieveOutboxEvents: () => Promise<Result<OutboundEvent[], Error>>;
+	migrate: () => Promise<void>;
 	sendAndDeleteOutboxEvent<O>(
 		event: InboundEvent,
 		bus: EventBus<InboundEvent, OutboundEvent>,
