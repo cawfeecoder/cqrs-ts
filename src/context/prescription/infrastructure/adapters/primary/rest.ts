@@ -67,6 +67,10 @@ export class RESTPrescriptionAdapter {
 		);
 	}
 
+	public getApp() {
+		return this.app;
+	}
+
 	public async run(...args: any[]): Promise<Result<undefined, Error>> {
 		try {
 			await this.app.listen({ port: 3000 }, (err, address) => {

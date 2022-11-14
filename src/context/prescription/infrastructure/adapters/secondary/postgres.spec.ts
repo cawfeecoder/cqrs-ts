@@ -77,7 +77,7 @@ describe("Prescription PostgresConnector", () => {
 		await expect(repository.migrate()).resolves.not.toThrow();
 	});
 	it("stores a valid PrescriptionEvent", async () => {
-		//Arange
+		// Arrange
 		let event = new PrescriptionAggregateEventEnvlope({
 			aggregateId: "test",
 			aggregateType: "prescription",
@@ -103,7 +103,7 @@ describe("Prescription PostgresConnector", () => {
 		expect(result.unwrap()).toEqual(undefined);
 	});
 	it("retrieves no events when none are previously inserted", async () => {
-		//Arange
+		// Arrange
 		await repository.migrate();
 
 		//Act
@@ -114,7 +114,7 @@ describe("Prescription PostgresConnector", () => {
 		expect(result.unwrap().length).toEqual(0);
 	});
 	it("retrieves an event when atleast one is previously inserted", async () => {
-		//Arange
+		// Arrange
 		await repository.migrate();
 
 		let event = new PrescriptionAggregateEventEnvlope({
@@ -142,7 +142,7 @@ describe("Prescription PostgresConnector", () => {
 		expect(result.unwrap().length).toEqual(1);
 	});
 	it("retrieves no outbox when none are previously inserted", async () => {
-		//Arange
+		// Arrange
 		await repository.migrate();
 
 		//Act
@@ -153,7 +153,7 @@ describe("Prescription PostgresConnector", () => {
 		expect(result.unwrap().length).toEqual(0);
 	});
 	it("retrieves an outbox event when atleast one is previously inserted", async () => {
-		//Arange
+		// Arrange
 		await repository.migrate();
 
 		let event = new PrescriptionAggregateEventEnvlope({
@@ -181,7 +181,7 @@ describe("Prescription PostgresConnector", () => {
 		expect(result.unwrap().length).toEqual(1);
 	});
 	it("sends and deletes an outbox event when it can successfully talk to the event bus", async () => {
-		//Arange
+		// Arrange
 		await repository.migrate();
 
 		let event = new PrescriptionAggregateEventEnvlope({
@@ -221,7 +221,7 @@ describe("Prescription PostgresConnector", () => {
 		expect(eventsAfterSend.length).toEqual(0);
 	});
 	it("errors when sending an outbox event when it can't successfully talk to the event bus", async () => {
-		//Arange
+		// Arrange
 		await repository.migrate();
 
 		let event = new PrescriptionAggregateEventEnvlope({

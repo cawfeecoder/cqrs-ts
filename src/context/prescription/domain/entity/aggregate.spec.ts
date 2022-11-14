@@ -5,7 +5,7 @@ import { PrescriptionCreatedEvent } from "./event";
 describe("PrescriptionAggregate", () => {
 	describe("handle commands", () => {
 		it("should emit a PrescriptionCreated event when receives a CreatePrescriptionCommand", async () => {
-			// Arange
+			//  Arrange
 			let command = new CreatePrescriptionCommand({
 				medicationId: "test",
 				patientId: "test",

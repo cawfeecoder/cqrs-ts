@@ -84,6 +84,10 @@ export class GraphQLPrescriptionAdapter {
 		});
 	}
 
+	public getApp() {
+		return this.app;
+	}
+
 	public async run(...args: any[]): Promise<Result<undefined, Error>> {
 		try {
 			const { url } = await startStandaloneServer(this.app);
