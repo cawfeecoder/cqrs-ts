@@ -8,6 +8,7 @@ import { PrescriptionAggregateEventEnvlope } from "@prescription/domain/entity/a
 import {
 	PrescriptionCreatedEvent,
 	PrescriptionEvent,
+	PrescriptionUpdatedEvent,
 } from "@prescription/domain/entity/event";
 import { None, Option, Some } from "@sniptt/monads/build";
 import { CloudEvent } from "cloudevents";
@@ -60,7 +61,23 @@ export class PrescriptionCloudEvent
 						// TODO: Change this to an organization/user when you have authentication
 						source: "system",
 						type: "system:prescription:created",
-						subject: event.id,
+						subject: val.aggregateId,
+						time: val.timestamp,
+						data: val.payload,
+					}),
+				);
+				break;
+			}
+			case "PrescriptionUpdated":{
+				let event = Object.assign({}, val.payload as PrescriptionUpdatedEvent);
+				(val.payload as Record<string, any>).eventId = undefined;
+				ce = Some(
+					new PrescriptionCloudEvent({
+						id: event.eventId,
+						// TODO: Change this to an organization/user when you have authentication
+						source: "system",
+						type: "system:prescription:created",
+						subject: val.aggregateId,
 						time: val.timestamp,
 						data: val.payload,
 					}),

@@ -17,6 +17,7 @@ import {
 import {
 	PrescriptionCreatedEvent,
 	PrescriptionEvent,
+	PrescriptionUpdatedEvent,
 } from "@prescription/domain/entity/event";
 
 export type PrescriptionAggregateType = Aggregate<
@@ -60,14 +61,14 @@ export class PrescriptionAggregate
 					case "PrescriptionCreated":
 						return createPrescriptionMachine("Created");
 					default:
-						return createPrescriptionMachine("New");
+						return createPrescriptionMachine("Created");
 				}
 			},
 			none: createPrescriptionMachine("New"),
 		});
 		const { initialState } = machine;
 		const { context } = machine.transition(initialState.value, {
-			type: CreatePrescriptionCommand.name,
+			type: command.name(),
 			command,
 		});
 		const { event } = context;
@@ -88,10 +89,16 @@ export class PrescriptionAggregate
 		switch (event.eventType()) {
 			case "PrescriptionCreated": {
 				let evt = event as PrescriptionCreatedEvent;
-				(this.id = Some(evt.id)), (this.patientId = Some(evt.patientId));
+				this.id = Some(evt.id);
+				this.patientId = Some(evt.patientId);
 				this.medicationId = Some(evt.patientId);
 				this.address = Some(evt.address);
 				this.lastEvent = Some(event);
+				break;
+			}
+			case "PrescriptionUpdated": {
+				let evt = event as PrescriptionUpdatedEvent;
+				this.address = Some(evt.address);
 				break;
 			}
 			default:

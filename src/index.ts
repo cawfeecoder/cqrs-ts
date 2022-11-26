@@ -21,6 +21,7 @@ import { EventRepository } from "@common/application/ports/outbound/eventReposit
 import { AggregateSnapshot } from "@common/domain/entity";
 import { EventBus } from "@common/application/ports/outbound/eventBus";
 import { PrescriptionOutboxAdapter } from "@prescription/infrastructure/adapters/primary/outbox";
+import { RedisLockManager } from "@common/infrastructure/adapters/secondary/lockManager/redis";
 
 (async () => {
 	const logger = ApplicationLogger.getInstance()
@@ -54,9 +55,10 @@ import { PrescriptionOutboxAdapter } from "@prescription/infrastructure/adapters
 				break;
 			}
 		}
+		const lockManager = new RedisLockManager({ host: "localhost", port: 6379 });
 		for (const adapterType of prescriptionConfig.inboundAdapters) {
 			if (adapterType === "rest") {
-				let service = new PrescriptionService<RESTPrescription>({}, repository);
+				let service = new PrescriptionService<RESTPrescription>({}, repository, lockManager);
 				let inboundAdapter = new RESTPrescriptionAdapter(service);
 				await inboundAdapter.run(exports);
 			}
@@ -64,6 +66,7 @@ import { PrescriptionOutboxAdapter } from "@prescription/infrastructure/adapters
 				let service = new PrescriptionService<GraphQLPrescription>(
 					{},
 					repository,
+					lockManager
 				);
 				let inboundAdapter = new GraphQLPrescriptionAdapter(service);
 				await inboundAdapter.run(exports);

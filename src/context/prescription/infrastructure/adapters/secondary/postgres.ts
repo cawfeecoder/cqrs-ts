@@ -11,6 +11,7 @@ import {
 import {
 	PrescriptionCreatedEvent,
 	PrescriptionEvent,
+	PrescriptionUpdatedEvent,
 } from "@prescription/domain/entity/event";
 import { EventBus } from "@common/application/ports/outbound/eventBus";
 import { ApplicationLogger } from "@common/utils/logger";
@@ -163,11 +164,47 @@ export class PostgresConnector
 						);
 						break;
 					}
+					case "PrescriptionUpdated": {
+						events.push(
+							new PrescriptionAggregateEventEnvlope({
+								aggregateId: event["aggregate_id"],
+								aggregateType: event["aggregate_type"],
+								sequence: event["sequence"],
+								payload: new PrescriptionUpdatedEvent({
+									address: raw_payload["address"],
+									eventId: raw_payload["eventId"],
+								}),
+								metadata: event["metadata"],
+								timestamp: new Date(event["timestamp"]),
+							}),
+						);
+						break;
+					}
 					default:
 						break;
 				}
 			}
 			return Ok(events);
+		} catch (e) {
+			return Err(e as Error);
+		}
+	}
+
+	public async aggregateExists(aggregateId: string): Promise<Result<undefined, Error>> {
+		const fields = [
+			"aggregate_id",
+		];
+
+		const query = this.connection.select(fields).from(EVENT_TABLE_NAME).where({
+			aggregate_id: aggregateId,
+		});
+		try {
+			const result = await query;
+			if (result.length > 0) {
+				return Ok(undefined);
+			} else {
+				return Err(new Error(`No aggregate with id ${aggregateId} found`))
+			}
 		} catch (e) {
 			return Err(e as Error);
 		}
@@ -216,6 +253,21 @@ export class PostgresConnector
 							}),
 						);
 						break;
+					}
+					case "PrescriptionUpdated": {
+						events.push(
+							new PrescriptionAggregateEventEnvlope({
+								aggregateId: event["aggregate_id"],
+								aggregateType: event["aggregate_type"],
+								sequence: event["sequence"],
+								payload: new PrescriptionUpdatedEvent({
+									address: raw_payload["address"],
+									eventId: raw_payload["eventId"],
+								}),
+								metadata: event["metadata"],
+								timestamp: new Date(event["timestamp"]),
+							}),
+						)
 					}
 					default:
 						break;

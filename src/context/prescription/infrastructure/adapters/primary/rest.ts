@@ -1,10 +1,11 @@
 import { Err, Ok, Result } from "@sniptt/monads/build";
 import fastify from "fastify";
-import { CreatePrescriptionCommand } from "@prescription/domain/entity/command";
+import { CreatePrescriptionCommand, UpdatePrescriptionCommand } from "@prescription/domain/entity/command";
 import { CreatePrescriptionUseCase } from "@prescription/application/ports/inbound/createPrescription";
 import { RESTPrescription } from "@prescription/infrastructure/dtos/rest/prescription";
 import { requireParams } from "@common/utils/rest";
 import { ApplicationLogger } from "@common/utils/logger";
+import { PrescriptionService } from "@prescription/application/service/prescription";
 
 interface PrescriptionMutation {
 	medication_id?: string;
@@ -13,11 +14,11 @@ interface PrescriptionMutation {
 }
 
 export class RESTPrescriptionAdapter {
-	private service: CreatePrescriptionUseCase<RESTPrescription>;
+	private service: PrescriptionService<RESTPrescription>;
 	private app;
 	private logger;
 
-	public constructor(service: CreatePrescriptionUseCase<RESTPrescription>) {
+	public constructor(service: PrescriptionService<RESTPrescription>) {
 		this.service = service;
 		this.logger = ApplicationLogger.getInstance().getLogger();
 		this.app = fastify({ logger: false });
@@ -60,6 +61,36 @@ export class RESTPrescriptionAdapter {
 					ok: (val) => res.send(val),
 					err: (err) => {
 						this.logger.error(err);
+						return res.status(500);
+					},
+				});
+			},
+		);
+		this.app.put<{ Body: PrescriptionMutation, Params: { id: string } }>(
+			"/prescription/:id",
+			async (req, res) => {
+				let { address } = req.body;
+				let { id } = req.params ;
+				const errors = requireParams({
+					address,
+				});
+				if (errors.length > 0) {
+					res.send({
+						errors,
+					});
+				}
+				let command = new UpdatePrescriptionCommand({
+					id: id,
+					address: address!,
+				});
+				let result = await this.service.updatePrescription(
+					command,
+					(aggregate) => RESTPrescription.from(aggregate),
+				);
+				result.match({
+					ok: (val) => res.send(val),
+					err: (err) => {
+						this.logger.error(err.message);
 						return res.status(500);
 					},
 				});

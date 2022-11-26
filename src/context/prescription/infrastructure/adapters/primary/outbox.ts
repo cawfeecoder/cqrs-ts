@@ -62,6 +62,8 @@ export class PrescriptionOutboxAdapter {
 								switch (event.payload.eventType()) {
 									case "PrescriptionCreated":
 										return "system.prescription.created";
+									case "PrescriptionUpdated":
+										return "system.prescription.updated";
 									default:
 										return "trash";
 								}
@@ -73,6 +75,7 @@ export class PrescriptionOutboxAdapter {
 								this.logger.info("Successfully sent event from outbox", {
 									id: event.sequence,
 									event: event,
+									event_type: event.payload.eventType()
 								});
 							},
 							err: (err) => {

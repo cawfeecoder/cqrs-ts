@@ -20,7 +20,7 @@ export function createPrescriptionMachine(initialState: string) {
 			_services: {},
 		},
 		states: Object.assign(New, Created),
-		initial: "New",
+		initial: initialState,
 		predictableActionArguments: true,
 	});
 }

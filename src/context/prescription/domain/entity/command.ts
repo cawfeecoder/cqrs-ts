@@ -1,4 +1,6 @@
-export interface PrescriptionCommand {}
+export interface PrescriptionCommand {
+	name(): string
+}
 
 export class CreatePrescriptionCommand implements PrescriptionCommand {
 	public medicationId: string;
@@ -18,6 +20,10 @@ export class CreatePrescriptionCommand implements PrescriptionCommand {
 		this.patientId = patientId;
 		this.address = address;
 	}
+	
+	public name() {
+		return "CreatePrescriptionCommand"
+	}
 }
 
 export class UpdatePrescriptionCommand implements PrescriptionCommand {
@@ -27,5 +33,9 @@ export class UpdatePrescriptionCommand implements PrescriptionCommand {
 	public constructor({ id, address }: { id: string; address: string }) {
 		this.id = id;
 		this.address = address;
+	}
+
+	public name() {
+		return "UpdatePrescriptionCommand"
 	}
 }

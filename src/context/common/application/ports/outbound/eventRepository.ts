@@ -9,6 +9,7 @@ export interface EventRepository<
 	OutboundSnapshot,
 > {
 	storeEvent: (event: InboundEvent) => Promise<Result<undefined, Error>>;
+	aggregateExists: (aggregateId: string) => Promise<Result<undefined, Error>>;
 	retrieveEvents: (
 		aggregateId: string,
 		after: Option<string>,

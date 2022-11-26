@@ -47,6 +47,7 @@
     "observable-fns": "^0.6.1",
     "pg": "^8.8.0",
     "pg-native": "^3.0.1",
+    "redis": "^4.5.1",
     "sqlite3": "^5.1.2",
     "ulid": "^2.3.0",
     "winston": "^3.8.2",
