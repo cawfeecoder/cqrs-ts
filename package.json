@@ -6,7 +6,7 @@
   "scripts": {
     "build:lambda": "rimraf ./dist && npx esbuild src/index.ts --bundle --minify --sourcemap --target=es2020 --outfile=./dist/index.js --platform=node --external:knex",
     "package:lambda": "cd dist && zip -r cqrs-ts.zip index.js*",
-    "build": "rimraf ./dist && tsc --project './tsconfig.json' && tsconfig-replace-paths -p ./tsconfig.json -s ./src/index.ts -o ./dist",
+    "build": "rimraf ./dist && esbuild src/index.ts --platform=node --external:oracledb --external:mysql --external:aws-sdk --external:pg-query-stream --external:mysql2 --external:tedious --external:mock-aws-s3 --external:nock --bundle --outfile=dist/index.js",
     "dev": "ts-node-dev --project './tsconfig.json' --watch -r tsconfig-paths/register ./src/index.ts",
     "test:all": "jest --verbose --runInBand --detectOpenHandles --forceExit",
     "test:unit": "jest --verbose --runInBand --detectOpenHandles --forceExit --testMatch **/domain/**/*.spec.ts",

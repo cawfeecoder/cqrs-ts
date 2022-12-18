@@ -1,6 +1,9 @@
 {
   "prescription": {
-    "repository": {},
+    "repository": {
+      "type": "sqlite",
+      "connectionString": ":memory:"
+    },
     "inboundAdapters": ["rest", "graphql"],
     "outbox": {
       "enabled": true,
